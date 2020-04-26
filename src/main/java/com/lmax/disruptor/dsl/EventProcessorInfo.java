@@ -19,6 +19,8 @@ import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.EventProcessor;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executor;
 
@@ -29,58 +31,52 @@ import java.util.concurrent.Executor;
  *
  * @param <T> the type of the configured {@link EventHandler}
  */
-class EventProcessorInfo<T> implements ConsumerInfo
-{
+class EventProcessorInfo<T> implements ConsumerInfo {
+    private static final Logger logger = LoggerFactory.getLogger(EventProcessorInfo.class);
     private final EventProcessor eventprocessor;
     private final EventHandler<? super T> handler;
     private final SequenceBarrier barrier;
     private boolean endOfChain = true;
 
     EventProcessorInfo(
-        final EventProcessor eventprocessor, final EventHandler<? super T> handler, final SequenceBarrier barrier)
-    {
+            final EventProcessor eventprocessor, final EventHandler<? super T> handler, final SequenceBarrier barrier) {
         this.eventprocessor = eventprocessor;
         this.handler = handler;
         this.barrier = barrier;
     }
 
-    public EventProcessor getEventProcessor()
-    {
+    public EventProcessor getEventProcessor() {
         return eventprocessor;
     }
 
     @Override
-    public Sequence[] getSequences()
-    {
+    public Sequence[] getSequences() {
         return new Sequence[]{eventprocessor.getSequence()};
     }
 
-    public EventHandler<? super T> getHandler()
-    {
+    public EventHandler<? super T> getHandler() {
         return handler;
     }
 
     @Override
-    public SequenceBarrier getBarrier()
-    {
+    public SequenceBarrier getBarrier() {
         return barrier;
     }
 
     @Override
-    public boolean isEndOfChain()
-    {
+    public boolean isEndOfChain() {
         return endOfChain;
     }
 
     @Override
-    public void start(final Executor executor)
-    {
+    public void start(final Executor executor) {
+        logger.error("start...");
         executor.execute(eventprocessor);
+        logger.error("start end");
     }
 
     @Override
-    public void halt()
-    {
+    public void halt() {
         eventprocessor.halt();
     }
 
@@ -88,14 +84,12 @@ class EventProcessorInfo<T> implements ConsumerInfo
      *
      */
     @Override
-    public void markAsUsedInBarrier()
-    {
+    public void markAsUsedInBarrier() {
         endOfChain = false;
     }
 
     @Override
-    public boolean isRunning()
-    {
+    public boolean isRunning() {
         return eventprocessor.isRunning();
     }
 }

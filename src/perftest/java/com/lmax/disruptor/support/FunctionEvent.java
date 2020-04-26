@@ -66,6 +66,7 @@ public final class FunctionEvent
 
     public static final EventFactory<FunctionEvent> EVENT_FACTORY = new EventFactory<FunctionEvent>()
     {
+        @Override
         public FunctionEvent newInstance()
         {
             return new FunctionEvent();

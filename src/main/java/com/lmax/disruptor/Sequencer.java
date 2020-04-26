@@ -18,8 +18,7 @@ package com.lmax.disruptor;
 /**
  * Coordinates claiming sequences for access to a data structure while tracking dependent {@link Sequence}s
  */
-public interface Sequencer extends Cursored, Sequenced
-{
+public interface Sequencer extends Cursored, Sequenced {
     /**
      * Set to -1 as sequence starting point
      */
@@ -34,6 +33,7 @@ public interface Sequencer extends Cursored, Sequenced
     void claim(long sequence);
 
     /**
+     * 用非阻塞方式，确认某个序号是否已经发布且事件可用。
      * Confirms if a sequence is published and the event is available for use; non-blocking.
      *
      * @param sequence of the buffer to check
@@ -42,6 +42,7 @@ public interface Sequencer extends Cursored, Sequenced
     boolean isAvailable(long sequence);
 
     /**
+     *  增加门控序列（消费者序列），用于生产者在生产时避免追尾消费者
      * Add the specified gating sequences to this instance of the Disruptor.  They will
      * safely and atomically added to the list of gating sequences.
      *
@@ -50,6 +51,7 @@ public interface Sequencer extends Cursored, Sequenced
     void addGatingSequences(Sequence... gatingSequences);
 
     /**
+     * 从门控序列中移除指定序列
      * Remove the specified sequence from this sequencer.
      *
      * @param sequence to be removed.
@@ -64,6 +66,7 @@ public interface Sequencer extends Cursored, Sequenced
      * @param sequencesToTrack All of the sequences that the newly constructed barrier will wait on.
      * @return A sequence barrier that will track the specified sequences.
      * @see SequenceBarrier
+     * 消费者使用，用于追踪指定序列（通常是上一组消费者的序列）
      */
     SequenceBarrier newBarrier(Sequence... sequencesToTrack);
 
@@ -77,6 +80,10 @@ public interface Sequencer extends Cursored, Sequenced
     long getMinimumSequence();
 
     /**
+     * 获取能够从环形缓冲读取的最高的序列号。依赖Sequencer的实现，可能会扫描Sequencer的一些值。扫描从nextSequence
+     * 到availableSequence。如果没有大于等于nextSequence的可用值，返回值将为nextSequence-1。为了工作正常，消费者
+     * 应该传递一个比最后成功处理的序列值大1的值。
+     *
      * Get the highest sequence number that can be safely read from the ring buffer.  Depending
      * on the implementation of the Sequencer this call may need to scan a number of values
      * in the Sequencer.  The scan will range from nextSequence to availableSequence.  If

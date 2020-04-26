@@ -19,8 +19,7 @@ package com.lmax.disruptor;
 /**
  * Strategy employed for making {@link EventProcessor}s wait on a cursor {@link Sequence}.
  */
-public interface WaitStrategy
-{
+public interface WaitStrategy {
     /**
      * Wait for the given sequence to be available.  It is possible for this method to return a value
      * less than the sequence number supplied depending on the implementation of the WaitStrategy.  A common
@@ -39,7 +38,7 @@ public interface WaitStrategy
      * @throws TimeoutException if a timeout occurs before waiting completes (not used by some strategies)
      */
     long waitFor(long sequence, Sequence cursor, Sequence dependentSequence, SequenceBarrier barrier)
-        throws AlertException, InterruptedException, TimeoutException;
+            throws AlertException, InterruptedException, TimeoutException;
 
     /**
      * Implementations should signal the waiting {@link EventProcessor}s that the cursor has advanced.

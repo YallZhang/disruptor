@@ -1,7 +1,7 @@
 package com.lmax.disruptor;
 
-public interface Sequenced
-{
+
+public interface Sequenced {
     /**
      * The capacity of the data structure to hold entries.
      *
@@ -26,6 +26,7 @@ public interface Sequenced
     long remainingCapacity();
 
     /**
+     * 生产者发布时，申请下一个序号
      * Claim the next event in sequence for publishing.
      *
      * @return the claimed sequence value
@@ -33,6 +34,8 @@ public interface Sequenced
     long next();
 
     /**
+     * 申请n个序号，用于批量发布
+     *
      * Claim the next n events in sequence for publishing.  This is for batch event producing.  Using batch producing
      * requires a little care and some math.
      * <pre>
@@ -51,6 +54,7 @@ public interface Sequenced
     long next(int n);
 
     /**
+     * next()的非阻塞模式
      * Attempt to claim the next event in sequence for publishing.  Will return the
      * number of the slot if there is at least <code>requiredCapacity</code> slots
      * available.
@@ -73,6 +77,7 @@ public interface Sequenced
     long tryNext(int n) throws InsufficientCapacityException;
 
     /**
+     * 数据填充后，发布此序号
      * Publishes a sequence. Call when the event has been filled.
      *
      * @param sequence the sequence to be published.

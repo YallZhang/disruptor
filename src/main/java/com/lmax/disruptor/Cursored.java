@@ -16,13 +16,13 @@
 package com.lmax.disruptor;
 
 /**
+ * 游标接口，用于获取生产者当前游标位置
  * Implementors of this interface must provide a single long value
  * that represents their current cursor value.  Used during dynamic
  * add/remove of Sequences from a
  * {@link SequenceGroups#addSequences(Object, java.util.concurrent.atomic.AtomicReferenceFieldUpdater, Cursored, Sequence...)}.
  */
-public interface Cursored
-{
+public interface Cursored {
     /**
      * Get the current cursor value.
      *
